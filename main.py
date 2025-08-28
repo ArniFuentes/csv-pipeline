@@ -8,7 +8,6 @@ def main():
     files_name = get_file_names(folder)
 
     processed_csv_files = process_files(folder, files_name)
-    print("process_files terminado")
 
     export_csv_files(folder, processed_csv_files, files_name)
 

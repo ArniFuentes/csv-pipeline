@@ -18,7 +18,7 @@ def rename_properties(df) -> pd.DataFrame:
         "Has stock": "Stock Store A",
     }
 
-    # cambiar nombre propiedades
+    # rename properties
     return df.rename(columns=new_properties)
 
 
