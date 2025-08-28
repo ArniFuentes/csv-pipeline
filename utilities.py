@@ -46,8 +46,7 @@ def process_files(folder: str, files: list[str]) -> list[pd.DataFrame]:
 
         df = pd.concat(df_list, ignore_index=True)
 
-        df = df[df['SKU'] != 0]
-        df = df[df['Stock'] == 'in_stock']
+        df = df[(df['SKU'] != 0) & (df['Stock'] == 'in_stock')]
 
         df = df.drop_duplicates()
 
