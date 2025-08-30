@@ -24,25 +24,26 @@ def export_csv_files(folder, transformed_files, files_name):
         df.to_csv(os.path.join(folder, output_file_name), index=False)
 
 
-def process_files(folder: str, files: list[str]) -> list[pd.DataFrame]:
+def process_files(folder: str, files: list[str], csv_config) -> list[pd.DataFrame]:
     transformed_files = []
 
     for file in files:
-        df = a_f.read_file(folder, file)
+        df = a_f.read_file(folder, file, csv_config.encodings,
+                           csv_config.delimiters)
 
         print(f"Processing file: {file}")
 
         df = df.drop_duplicates()
 
         target_date = a_f.create_target_date(file)
-    
+
         df = a_f.filter_by_date(df, target_date)
 
-        df = a_f.rename_properties(df)
+        df = df.rename(columns=csv_config.new_properties)
 
         stores = a_f.create_stores(df)
 
-        df_list = a_f.create_dfs_list(stores, df)
+        df_list = a_f.create_dfs_list(stores, df, csv_config.prices)
 
         df = pd.concat(df_list, ignore_index=True)
 

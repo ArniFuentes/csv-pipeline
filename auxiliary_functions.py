@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from itertools import product
 
 
 def filter_by_date(df, target_date) -> pd.DataFrame:
@@ -9,42 +10,24 @@ def filter_by_date(df, target_date) -> pd.DataFrame:
     return df[df['Update date and time Store A'] == target_date]
 
 
-def rename_properties(df) -> pd.DataFrame:
-    new_properties = {
-        "Regular price": "Regular price Store A",
-        "Card price": "Card price Store A",
-        "SKU": "SKU Store A",
-        "URL": "URL Store A",
-        "Has stock": "Stock Store A",
-    }
-
-    # rename properties
-    return df.rename(columns=new_properties)
-
-
 def create_stores(df) -> list[str]:
     df_columns = list(df.columns)
     stores = [string[4:] for string in df_columns if 'SKU' in string]
     return stores
 
 
-def read_file(folder, file) -> pd.DataFrame:
-    encodings = ["Windows-1252", "utf-8", "utf-8-sig", "latin-1", "cp1252"]
-    delimiters = [";", "|", ","]
-    for enc in encodings:
-        try:
-            for deli in delimiters:
-                try:
-                    df = pd.read_csv(os.path.join(folder, file),
-                                     delimiter=deli, encoding=enc)
-                except:
-                    print(f'Try another delimiter')
+def read_file(folder, file, encodings, delimiters) -> pd.DataFrame:
+    filepath = os.path.join(folder, file)
 
-            if isinstance(df, pd.DataFrame):
-                break
+    for enc, deli in product(encodings, delimiters):
+        try:
+            df = pd.read_csv(filepath, delimiter=deli, encoding=enc)
+            return df
         except:
-            print(f"Try another encoding")
-    return df
+            print(f"Failed with encoding={enc}, delimiter={deli}")
+
+    raise ValueError(
+        "The file could not be read with the defined encodings/delimiters.")
 
 
 def create_target_date(file):
@@ -56,9 +39,7 @@ def create_target_date(file):
     return target_date
 
 
-def create_dfs_list(stores, df) -> list[pd.DataFrame]:
-    prices = [("Regular price", "Regular price {}"),
-              ("Card price", "Card price {}")]
+def create_dfs_list(stores, df, prices) -> list[pd.DataFrame]:
     df_list = []
 
     for store in stores:
