@@ -3,6 +3,7 @@ from tkinter.filedialog import askdirectory
 import os
 import pandas as pd
 import auxiliary_functions as a_f
+from csv_config import CSVConfig
 
 
 def select_folder() -> str:
@@ -24,7 +25,7 @@ def export_csv_files(folder, transformed_files, files_name):
         df.to_csv(os.path.join(folder, output_file_name), index=False)
 
 
-def process_files(folder: str, files: list[str], csv_config) -> list[pd.DataFrame]:
+def process_files(folder: str, files: list[str], csv_config: CSVConfig) -> list[pd.DataFrame]:
     transformed_files = []
 
     for file in files:

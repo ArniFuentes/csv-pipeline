@@ -40,22 +40,18 @@ def create_target_date(file):
 
 
 def create_dfs_list(stores, df, prices) -> list[pd.DataFrame]:
-    df_list = []
-
-    for store in stores:
-        for price_type, col_pattern in prices:
-            col = col_pattern.format(store)
-            tienda_df = pd.DataFrame({
-                'SKU': df[f'SKU {store}'],
-                'Category': df['Category'],
-                'Brand': df['Brand'],
-                'Name': df['Name'],
-                'Price': df[col],
-                'Price type': price_type,
-                'Stock': df[f'Stock {store}'],
-                'Store': store,
-                'Date': df['Update date and time Store A']
-            })
-
-            df_list.append(tienda_df)
+    df_list = [
+        pd.DataFrame({
+            'SKU': df[f'SKU {store}'],
+            'Category': df['Category'],
+            'Brand': df['Brand'],
+            'Name': df['Name'],
+            'Price': df[col_pattern.format(store)],
+            'Price type': price_type,
+            'Stock': df[f'Stock {store}'],
+            'Store': store,
+            'Date': df['Update date and time Store A']
+        })
+        for store, (price_type, col_pattern) in product(stores, prices)
+    ]
     return df_list

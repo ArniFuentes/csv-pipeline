@@ -21,3 +21,5 @@ csv_config = CSVConfig(
     delimiters=[";", "|", ","],
     prices=[("Regular price", "Regular price {}"), ("Card price", "Card price {}")]
 )
+
+
